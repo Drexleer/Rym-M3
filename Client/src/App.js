@@ -14,19 +14,20 @@ function App() {
 
    const [characters, SetCharacters] = useState([]); 
    
-   const onSearch = (id) => {
-      axios(`http://localhost:3001/rickandmorty/character/${id}`)
-      .then(({data}) => {
-         if(!characters.find(char => char.id === data.id)) {
-            if(data.name) {
-               SetCharacters((oldcharacters)=> [...oldcharacters, data])
+   const onSearch = async (id) =>{
+      try {
+         const {data} = await axios(`https://rickandmortyapi.com/api/character/${id}`);
+         if(!characters.find((char)=> char.id === data.id)){
+            if(data.name){
+            SetCharacters((oldCharacters)=>[...oldCharacters, data]);
             }
-         } else {
-            window.alert("Ya existe un personaje con ese ID");
-         }
-      })
-      .catch(err => alert(err.response.data))
-   };
+            } else{ 
+            window.alert(`Ya seleccionaste este personaje ${id}`);
+            }
+      }catch (error){
+         alert(error.response.data);
+      }
+   }
    
    const onClose = (id) =>{
       SetCharacters(characters.filter(char => char.id !== id))
